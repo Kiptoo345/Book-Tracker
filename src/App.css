@@ -1,0 +1,47 @@
+#center { padding: 32px; }
+
+form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+input, select, button {
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: #dc2626;
+  margin-left: 6px;
+}
+
+.book-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.book-table th,
+.book-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.book-table th { color: var(--text-h); }
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}

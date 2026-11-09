@@ -4,7 +4,7 @@ A small web app for keeping track of books shared between two family homes — w
 
 Built as a personal learning project with **React** and **Supabase**.
 
-**Live app:** _coming soon_
+**Live app:** https://book-tracker-xi-three.vercel.app
 
 ## Features
 

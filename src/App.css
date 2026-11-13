@@ -45,3 +45,75 @@ button {
   gap: 8px;
   margin-bottom: 16px;
 }
+
+/* ---------- Phone layout ---------- */
+@media (max-width: 600px) {
+
+  /* Table → cards */
+  .book-table thead {
+    display: none;
+  }
+
+  .book-table,
+  .book-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .book-table tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+
+  .book-table td {
+    display: flex;
+    justify-content: space-between;  /* label left, value right */
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .book-table td::before {
+    content: attr(data-label);       /* reads the label from the JSX */
+    font-weight: 600;
+    color: var(--text-h);
+  }
+
+  .book-table td.actions {
+    justify-content: flex-end;       /* buttons to the right */
+    padding-top: 10px;
+  }
+
+  .book-table td.actions::before {
+    content: none;                   /* no label for the buttons cell */
+  }
+
+  /* Form + filters stack vertically */
+  form,
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  form input,
+  form select,
+  .filters input,
+  .filters select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Finger-friendly, and stops iPhone auto-zoom */
+  input,
+  select,
+  button {
+    font-size: 16px;
+    min-height: 44px;
+  }
+}

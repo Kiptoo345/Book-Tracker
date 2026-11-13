@@ -174,7 +174,7 @@ function App() {
       <h1>Home Book-Tracker</h1>
       <h2>Keeps a record of our books and where each one is.</h2>
 
-      <button onClick={() => supabase.auth.signOut()}>Log out</button>
+      <button className="Logout-btn" onClick={() => supabase.auth.signOut()}>Log out</button>
 
       <form onSubmit={handleAddBook}>
         <input
@@ -246,10 +246,10 @@ function App() {
         <tbody>
           {filteredBooks.map(book => (
             <tr key={book.id}>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
+              <td data-label="Title">{book.title}</td>
+              <td data-label="Author">{book.author}</td>
 
-              <td>
+              <td data-label="Holder">
                 <select
                   value={selectedHolder[book.id] ?? book.current_holder_id ?? ''}
                   onChange={(e) => setSelectedHolder({ ...selectedHolder, [book.id]: e.target.value })}
@@ -261,7 +261,7 @@ function App() {
                 </select>
               </td>
 
-               <td>
+               <td data-label="Location">
                 <select
                   value={selectedLocation[book.id] ?? book.current_location ?? ''}
                   onChange={(e) => setSelectedLocation({ ...selectedLocation, [book.id]: e.target.value })}
@@ -273,7 +273,7 @@ function App() {
                 </select>
               </td>
 
-              <td>
+              <td className="actions">
                 <button onClick={() => handleSave(book.id)}>Save</button>
                 <button className="delete-btn" onClick={() => handleDelete(book.id)}>Delete</button>
               </td>            

@@ -44,6 +44,7 @@ button {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 /* ---------- Phone layout ---------- */
@@ -75,6 +76,7 @@ button {
     align-items: center;
     gap: 12px;
     padding: 6px 0;
+    border-bottom: none;
   }
 
   .book-table td::before {
@@ -116,4 +118,6 @@ button {
     font-size: 16px;
     min-height: 44px;
   }
+
+  #center { padding: 16px; }
 }

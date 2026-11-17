@@ -18,7 +18,7 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState({}) 
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
-  const [newHolder, setNewHolder] = useState('')
+  const [newHolder, setNewHolder] = useState(null)
   const [newLocation, setNewLocation] = useState('')
   const [search, setSearch] = useState('')
   const [locationFilter, setLocationFilter] = useState('')
@@ -66,6 +66,10 @@ function App() {
     }
     fetchPeople()
   }, [session])
+
+  // Derived values (calculated every render, not state)
+  const me = people.find(p => p.user_id === session?.user.id)
+  const formHolder = newHolder ?? me?.id ?? ''
 
   //  Save holder and/or location 
   async function handleSave(bookId) {
@@ -130,7 +134,7 @@ function App() {
       .insert({
         title: newTitle.trim(),
         author: newAuthor.trim(),
-        current_holder_id: newHolder === '' ? null : newHolder,
+        current_holder_id: formHolder === '' ? null : formHolder,
         current_location: newLocation === '' ? null : newLocation, 
       })
       .select()
@@ -144,7 +148,7 @@ function App() {
 
     setNewTitle('')
     setNewAuthor('')
-    setNewHolder('')
+    setNewHolder(null)
     setNewLocation('') 
   }
 
@@ -160,6 +164,7 @@ function App() {
 
     const matchesHolder =
       holderFilter === '' ||
+      (holderFilter === 'me' && me && book.current_holder_id === me.id) ||
       (holderFilter === 'none' && book.current_holder_id == null) ||
       String(book.current_holder_id) === holderFilter
 
@@ -174,7 +179,8 @@ function App() {
       <h1>Home Book-Tracker</h1>
       <h2>Keeps a record of our books and where each one is.</h2>
 
-      <button className="Logout-btn" onClick={() => supabase.auth.signOut()}>Log out</button>
+      {me && <p>Logged in as {me.name}</p>}
+      <button className="logout-btn" onClick={() => supabase.auth.signOut()}>Log out</button>
 
       <form onSubmit={handleAddBook}>
         <input
@@ -191,7 +197,7 @@ function App() {
           onChange={(e) => setNewAuthor(e.target.value)}
         />
 
-        <select value={newHolder} onChange={(e) => setNewHolder(e.target.value)}>
+        <select value={formHolder} onChange={(e) => setNewHolder(e.target.value)}>
           <option value="">No holder</option>
           {people.map(person => (
             <option key={person.id} value={person.id}>{person.name}</option>
@@ -226,6 +232,7 @@ function App() {
 
        <select value={holderFilter} onChange={(e) => setHolderFilter(e.target.value)}>
           <option value="">All holders</option>
+          {me && <option value="me">My books</option>}
           <option value="none">No holder</option>
           {people.map(person => (
             <option key={person.id} value={person.id}>{person.name}</option>

@@ -3,14 +3,16 @@
    ========================================= */
 .top-bar {
   display: flex;
-  justify-content: space-between; /* brand left, user info right */
+  justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
   border-bottom: 1px solid var(--border);
 }
 
 .brand {
-  font-weight: 600;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 20px;
   color: var(--text-h);
   text-decoration: none;
 }
@@ -37,9 +39,9 @@
 #center {
   display: flex;
   flex-direction: column;
-  align-items: center; /* centres headings, form, filters */
-  gap: 20px;           /* space between each section */
-  padding: 32px;       /* the ONLY desktop padding rule */
+  align-items: center;
+  gap: 20px;
+  padding: 32px;
 }
 
 /* =========================================
@@ -48,7 +50,7 @@
 form,
 .filters {
   display: flex;
-  justify-content: center; /* lines up under the centred headings */
+  justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -65,21 +67,98 @@ button {
   border-radius: 6px;
 }
 
+input,
+select {
+  background: var(--surface);
+  color: var(--text-h);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 1px;
+}
+
 button {
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
   border: none;
   cursor: pointer;
+  font-weight: 600;
+  transition: filter 0.15s;
+}
+
+button:hover {
+  filter: brightness(1.1);
 }
 
 .delete-btn {
   background: #dc2626;
+  color: white;
   margin-left: 6px;
 }
 
 /* =========================================
-   Book table
+   Add book button
    ========================================= */
+.add-book-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 999px;          /* pill shape */
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s;
+}
+
+.add-book-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   Summary tiles
+   ========================================= */
+.summary {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 20px;
+  min-width: 100px;
+  box-shadow: var(--shadow);
+}
+
+.stat-number {
+  display: block;
+  font-family: var(--heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 13px;
+}
+
+/* =========================================
+   Book table (inside a card)
+   ========================================= */
+.table-card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;              /* keeps the rounded corners clean */
+}
+
 .book-table {
   width: 100%;
   border-collapse: collapse;
@@ -88,28 +167,30 @@ button {
 
 .book-table th,
 .book-table td {
-  padding: 10px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border);
 }
 
 .book-table th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  background: var(--accent-bg);
+}
+
+.book-table td:first-child {
+  font-weight: 600;
   color: var(--text-h);
 }
 
-/* =========================================
-   Page links + clickable rows
-   ========================================= */
-.add-book-btn {
-  background: var(--accent);
-  color: white;
-  text-decoration: none;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-weight: 600;
+.book-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .book-table tr.clickable {
   cursor: pointer;
+  transition: background 0.15s;
 }
 
 .book-table tr.clickable:hover {
@@ -117,15 +198,87 @@ button {
 }
 
 /* =========================================
-   Add / Edit page forms
+   Holder initials + location tags
+   ========================================= */
+.holder {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--accent);
+  color: var(--on-accent);
+  flex-shrink: 0;                /* never squashed into an oval */
+}
+
+.avatar.empty {
+  background: var(--border);
+  color: var(--text);
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tag-main {
+  background: var(--tag-main-bg);
+  color: var(--tag-main-text);
+}
+
+.tag-brother {
+  background: var(--tag-brother-bg);
+  color: var(--tag-brother-text);
+}
+
+.tag-none {
+  background: var(--border);
+  color: var(--text);
+}
+
+/* =========================================
+   Empty state
+   ========================================= */
+.empty-state {
+  padding: 36px 16px;
+  text-align: center;
+}
+
+.empty-state .icon {
+  display: block;
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+/* =========================================
+   Add / Edit page forms (as cards)
    ========================================= */
 .stacked-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  box-sizing: border-box;        /* padding stays inside the 420px */
+  padding: 24px;
   text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
 }
 
 .stacked-form label {
@@ -137,7 +290,7 @@ button {
 }
 
 .stacked-form .delete-btn {
-  margin-left: 0; /* it's stacked now, not beside Save */
+  margin-left: 0;
 }
 
 /* =========================================
@@ -156,12 +309,32 @@ button {
   }
 
   .user-info .label {
-    display: none; /* shows just the name, not "Logged in as ..." */
+    display: none;
   }
 
   /* --- Page --- */
   #center {
     padding: 16px;
+  }
+
+  /* --- Summary: 4 tiles share one row --- */
+  .summary {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .stat {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 4px;
+  }
+
+  .stat-number {
+    font-size: 22px;
+  }
+
+  .stat-label {
+    font-size: 11px;
   }
 
   /* --- Form + filters stack vertically --- */
@@ -179,7 +352,6 @@ button {
     box-sizing: border-box;
   }
 
-  /* --- Finger-friendly, and stops iPhone auto-zoom --- */
   input,
   select,
   button {
@@ -187,7 +359,15 @@ button {
     min-height: 44px;
   }
 
-  /* --- Table becomes cards --- */
+  /* --- Table card: let each row be its own card instead --- */
+  .table-card {
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
   .book-table thead {
     display: none;
   }
@@ -200,15 +380,17 @@ button {
 
   .book-table tr {
     display: block;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 12px 14px;
     margin-bottom: 12px;
   }
 
   .book-table td {
     display: flex;
-    justify-content: space-between; /* label left, value right */
+    justify-content: space-between;
     align-items: center;
     gap: 12px;
     padding: 6px 0;
@@ -216,17 +398,18 @@ button {
   }
 
   .book-table td::before {
-    content: attr(data-label); /* reads the label from the JSX */
+    content: attr(data-label);
     font-weight: 600;
-    color: var(--text-h);
+    font-size: 13px;
+    color: var(--text);
   }
 
   .book-table td.actions {
-    justify-content: flex-end; /* buttons to the right */
+    justify-content: flex-end;
     padding-top: 10px;
   }
 
   .book-table td.actions::before {
-    content: none; /* no label for the buttons cell */
+    content: none;
   }
 }

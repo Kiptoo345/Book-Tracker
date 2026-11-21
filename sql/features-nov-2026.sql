@@ -45,8 +45,8 @@ with check (bucket_id = 'covers');
 -- ---------------------------------------------------------------------
 create table if not exists public.book_history (
   id          bigint generated always as identity primary key,
-  book_id     bigint not null references public.books(id) on delete cascade,
-  holder_id   bigint references public.people(id) on delete set null,
+  book_id     uuid not null references public.books(id) on delete cascade,
+  holder_id   uuid references public.people(id) on delete set null,
   location    text,
   changed_at  timestamptz not null default now(),
   changed_by  uuid default auth.uid()      -- the login that made the change

@@ -92,7 +92,7 @@ for each row execute function public.log_book_history();
 -- dated from its last update. Run once only.
 insert into public.book_history (book_id, holder_id, location, changed_at, changed_by)
 select id, current_holder_id, current_location,
-       coalesce(last_updated, created_at, now()), null
+       coalesce(last_updated, now()), null
 from public.books
 where not exists (
   select 1 from public.book_history h where h.book_id = books.id

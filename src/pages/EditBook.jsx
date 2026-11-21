@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { LOCATIONS, CATEGORIES } from '../constants'
 import CoverPicker from '../components/CoverPicker'
+import BookHistory from '../components/BookHistory'
 
 function EditBook({ books, setBooks, people }) {
   const { id } = useParams() // the ":id" part of /book/:id (always a string)
@@ -173,6 +174,8 @@ function EditBook({ books, setBooks, people }) {
           {busy === 'deleting' ? 'Deleting…' : 'Delete book'}
         </button>
       </div>
+
+      <BookHistory bookId={book.id} people={people} />
 
       <Link to="/">← Back to list</Link>
     </>

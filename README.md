@@ -14,7 +14,10 @@ Built as a personal learning project with **React** and **Supabase**.
 - ✏️ **Update** who holds a book and which home it's at
 - 🗑️ **Delete** books (with confirmation)
 - 🔍 **Search** by title or author
-- 🏠 **Filter** by location
+- 🏠 **Filter** by location, holder and category
+- 🏷️ **Categories** — Fiction, Christian, Self-help and more (list lives in `src/constants.js`)
+- 🖼️ **Covers** — find a cover on Open Library by title/author, or take a photo (shrunk and stored in Supabase Storage)
+- 🕓 **History** — a timeline on each book's page of who had it, where, and for how long (recorded automatically by a database trigger)
 
 ## Tech stack
 
@@ -40,10 +43,24 @@ Built as a personal learning project with **React** and **Supabase**.
 | author            | text |
 | current_holder_id | references `people.id` |
 | current_location  | text (`main` / `brother`) |
+| category          | text (nullable) |
+| cover_url         | text (nullable) |
 | created_at        | timestamp |
 | last_updated      | timestamp |
 
-RLS is enabled on both tables. Signed-in users can read, add, edit and delete books, and read people.
+**`book_history`** — written only by the `books_log_history` trigger
+| Column     | Type |
+|------------|------|
+| id         | primary key |
+| book_id    | references `books.id` (cascade delete) |
+| holder_id  | references `people.id` |
+| location   | text |
+| changed_at | timestamp |
+| changed_by | the login (auth user id) that made the change |
+
+The SQL for categories, covers and history is in [`sql/features-nov-2026.sql`](sql/features-nov-2026.sql).
+
+RLS is enabled on all tables (`book_history` is read-only from the app). Signed-in users can read, add, edit and delete books, and read people.
 
 ## Running locally
 
@@ -65,6 +82,4 @@ RLS is enabled on both tables. Signed-in users can read, add, edit and delete bo
 
 ## Planned
 
-- Link `people` to login accounts ("My books" view)
-- Loan history (who had each book, and when)
 - Realtime updates between devices

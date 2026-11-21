@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { LOCATIONS } from '../constants'
+import { LOCATIONS, CATEGORIES } from '../constants'
 
 // "2026-11-18T09:56:00Z" → "18 Nov 2026"
 function formatDate(iso) {
@@ -16,6 +16,7 @@ function BookList({ books, people, me }) {
   const [search, setSearch] = useState('')
   const [locationFilter, setLocationFilter] = useState('')
   const [holderFilter, setHolderFilter] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('')
   const navigate = useNavigate()
 
   function locationLabel(value) {
@@ -44,7 +45,12 @@ function BookList({ books, people, me }) {
       (holderFilter === 'none' && book.current_holder_id == null) ||
       String(book.current_holder_id) === holderFilter
 
-    return matchesSearch && matchesLocation && matchesHolder
+    const matchesCategory =
+      categoryFilter === '' ||
+      (categoryFilter === 'none' && !book.category) ||
+      book.category === categoryFilter
+
+    return matchesSearch && matchesLocation && matchesHolder && matchesCategory
   })
 
   return (
@@ -96,6 +102,14 @@ function BookList({ books, people, me }) {
             <option key={person.id} value={person.id}>{person.name}</option>
           ))}
         </select>
+
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+          <option value="">All categories</option>
+          <option value="none">No category</option>
+          {CATEGORIES.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
       </div>
 
       <div className="table-card">
@@ -104,6 +118,7 @@ function BookList({ books, people, me }) {
             <tr>
               <th>Title</th>
               <th>Author</th>
+              <th>Category</th>
               <th>Holder</th>
               <th>Location</th>
               <th>Last updated</th>
@@ -120,8 +135,18 @@ function BookList({ books, people, me }) {
                   className="clickable"
                   onClick={() => navigate(`/book/${book.id}`)}
                 >
-                  <td data-label="Title">{book.title}</td>
+                  <td data-label="Title">
+                    <span className="title-cell">
+                      {book.cover_url ? (
+                        <img className="cover-thumb" src={book.cover_url} alt="" loading="lazy" />
+                      ) : (
+                        <span className="cover-thumb empty">📖</span>
+                      )}
+                      {book.title}
+                    </span>
+                  </td>
                   <td data-label="Author">{book.author}</td>
+                  <td data-label="Category">{book.category ?? '—'}</td>
 
                   <td data-label="Holder">
                     <span className="holder">

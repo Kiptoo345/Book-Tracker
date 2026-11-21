@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
-import { LOCATIONS } from '../constants'
+import { LOCATIONS, CATEGORIES } from '../constants'
+import CoverPicker from '../components/CoverPicker'
 
 function AddBook({ setBooks, people, me }) {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
+  const [newCategory, setNewCategory] = useState('')
+  const [newCover, setNewCover] = useState('')
   const [newHolder, setNewHolder] = useState(null)
   const [newLocation, setNewLocation] = useState('')
   const [saving, setSaving] = useState(false)  // true while the request is running
@@ -33,6 +36,8 @@ function AddBook({ setBooks, people, me }) {
       .insert({
         title: newTitle.trim(),
         author: newAuthor.trim(),
+        category: newCategory === '' ? null : newCategory,
+        cover_url: newCover === '' ? null : newCover,
         current_holder_id: formHolder === '' ? null : formHolder,
         current_location: newLocation === '' ? null : newLocation,
         last_updated: new Date().toISOString(),
@@ -71,6 +76,24 @@ function AddBook({ setBooks, people, me }) {
             value={newAuthor}
             onChange={(e) => setNewAuthor(e.target.value)}
           />
+        </label>
+
+        <CoverPicker
+          value={newCover}
+          onChange={setNewCover}
+          title={newTitle}
+          author={newAuthor}
+          disabled={saving}
+        />
+
+        <label>
+          Category
+          <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
+            <option value="">No category</option>
+            {CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
         </label>
 
         <label>

@@ -318,6 +318,168 @@ select:disabled {
 }
 
 /* =========================================
+   Book covers
+   ========================================= */
+.title-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cover-thumb {
+  width: 32px;
+  height: 46px;                  /* roughly a book's shape */
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.cover-thumb.empty,
+.cover-preview.empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-bg);
+  border: 1px dashed var(--border);
+  box-shadow: none;
+}
+
+.cover-thumb.empty {
+  font-size: 16px;
+}
+
+.cover-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.cover-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.cover-preview {
+  width: 90px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+  font-size: 32px;
+}
+
+.cover-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.secondary-btn {
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* beat ".stacked-form label" (which stacks label content vertically) */
+.stacked-form label.file-btn {
+  display: inline-block;
+  color: var(--accent);
+}
+
+.file-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-btn {
+  background: none;
+  color: var(--text);
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.hint {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* =========================================
+   Book history timeline
+   ========================================= */
+.history {
+  width: 100%;
+  max-width: 420px;
+  text-align: left;
+}
+
+.history h3 {
+  margin: 0 0 10px;
+  color: var(--text-h);
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 18px;
+  border-left: 2px solid var(--border);
+}
+
+.timeline li {
+  position: relative;
+  padding: 0 0 16px 12px;
+}
+
+/* the dot on the line */
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.timeline li.current::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg);
+}
+
+.timeline-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--text-h);
+}
+
+.timeline-dates {
+  font-size: 14px;
+}
+
+.timeline-by {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* =========================================
    Phones (all phone rules in one place)
    ========================================= */
 @media (max-width: 600px) {

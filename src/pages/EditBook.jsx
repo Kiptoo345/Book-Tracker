@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
-import { LOCATIONS } from '../constants'
+import { LOCATIONS, CATEGORIES } from '../constants'
 
 function EditBook({ books, setBooks, people }) {
   const { id } = useParams() // the ":id" part of /book/:id (always a string)
@@ -10,6 +10,7 @@ function EditBook({ books, setBooks, people }) {
   // undefined = "not changed yet"
   const [holderChoice, setHolderChoice] = useState(undefined)
   const [locationChoice, setLocationChoice] = useState(undefined)
+  const [categoryChoice, setCategoryChoice] = useState(undefined)
   const [busy, setBusy] = useState('')         // '' | 'saving' | 'deleting'
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -31,18 +32,31 @@ function EditBook({ books, setBooks, people }) {
     if (busy) return // something is already running
 
     // Nothing changed, just go back
-    if (holderChoice === undefined && locationChoice === undefined) {
+    if (
+      holderChoice === undefined &&
+      locationChoice === undefined &&
+      categoryChoice === undefined
+    ) {
       navigate('/')
       return
     }
 
-    const updates = { last_updated: new Date().toISOString() }
+    const updates = {}
 
     if (holderChoice !== undefined) {
       updates.current_holder_id = holderChoice === '' ? null : holderChoice
     }
     if (locationChoice !== undefined) {
       updates.current_location = locationChoice === '' ? null : locationChoice
+    }
+    if (categoryChoice !== undefined) {
+      updates.category = categoryChoice === '' ? null : categoryChoice
+    }
+
+    // "Last updated" means "last moved", so only bump it when the
+    // holder or location changed (not for a category fix)
+    if (holderChoice !== undefined || locationChoice !== undefined) {
+      updates.last_updated = new Date().toISOString()
     }
 
     setBusy('saving')
@@ -94,6 +108,20 @@ function EditBook({ books, setBooks, people }) {
       <p>{book.author}</p>
 
       <div className="stacked-form">
+        <label>
+          Category
+          <select
+            value={categoryChoice ?? book.category ?? ''}
+            onChange={(e) => setCategoryChoice(e.target.value)}
+            disabled={busy !== ''}
+          >
+            <option value="">No category</option>
+            {CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </label>
+
         <label>
           Holder
           <select

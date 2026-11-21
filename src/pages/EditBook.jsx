@@ -7,9 +7,11 @@ function EditBook({ books, setBooks, people }) {
   const { id } = useParams() // the ":id" part of /book/:id (always a string)
   const navigate = useNavigate()
 
-  // undefined = "not changed yet" (same idea as your old selectedHolder)
+  // undefined = "not changed yet"
   const [holderChoice, setHolderChoice] = useState(undefined)
   const [locationChoice, setLocationChoice] = useState(undefined)
+  const [busy, setBusy] = useState('')         // '' | 'saving' | 'deleting'
+  const [errorMsg, setErrorMsg] = useState('')
 
   const book = books.find(b => String(b.id) === id)
 
@@ -26,6 +28,8 @@ function EditBook({ books, setBooks, people }) {
   }
 
   async function handleSave() {
+    if (busy) return // something is already running
+
     // Nothing changed, just go back
     if (holderChoice === undefined && locationChoice === undefined) {
       navigate('/')
@@ -41,24 +45,32 @@ function EditBook({ books, setBooks, people }) {
       updates.current_location = locationChoice === '' ? null : locationChoice
     }
 
+    setBusy('saving')
+    setErrorMsg('')
+
     const { data, error } = await supabase
       .from('books')
       .update(updates)
       .eq('id', book.id)
-      .select() // get the saved row back from the database
+      .select()
 
     if (error) {
       console.error(error)
+      setErrorMsg("Couldn't save your changes. Check your connection and try again.")
+      setBusy('')
       return
     }
 
-    // Swap in the fresh row from the database
     setBooks(prev => prev.map(b => (b.id === book.id ? data[0] : b)))
     navigate('/')
   }
 
   async function handleDelete() {
+    if (busy) return
     if (!window.confirm('Delete this book? This cannot be undone.')) return
+
+    setBusy('deleting')
+    setErrorMsg('')
 
     const { error } = await supabase
       .from('books')
@@ -67,6 +79,8 @@ function EditBook({ books, setBooks, people }) {
 
     if (error) {
       console.error(error)
+      setErrorMsg("Couldn't delete the book. Check your connection and try again.")
+      setBusy('')
       return
     }
 
@@ -85,6 +99,7 @@ function EditBook({ books, setBooks, people }) {
           <select
             value={holderChoice ?? book.current_holder_id ?? ''}
             onChange={(e) => setHolderChoice(e.target.value)}
+            disabled={busy !== ''}
           >
             <option value="">No holder</option>
             {people.map(person => (
@@ -98,6 +113,7 @@ function EditBook({ books, setBooks, people }) {
           <select
             value={locationChoice ?? book.current_location ?? ''}
             onChange={(e) => setLocationChoice(e.target.value)}
+            disabled={busy !== ''}
           >
             <option value="">No location</option>
             {LOCATIONS.map(loc => (
@@ -106,8 +122,14 @@ function EditBook({ books, setBooks, people }) {
           </select>
         </label>
 
-        <button onClick={handleSave}>Save changes</button>
-        <button className="delete-btn" onClick={handleDelete}>Delete book</button>
+        {errorMsg && <p className="error-msg" role="alert">{errorMsg}</p>}
+
+        <button onClick={handleSave} disabled={busy !== ''}>
+          {busy === 'saving' ? 'Saving…' : 'Save changes'}
+        </button>
+        <button className="delete-btn" onClick={handleDelete} disabled={busy !== ''}>
+          {busy === 'deleting' ? 'Deleting…' : 'Delete book'}
+        </button>
       </div>
 
       <Link to="/">← Back to list</Link>

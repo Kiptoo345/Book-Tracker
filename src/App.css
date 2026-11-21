@@ -294,6 +294,30 @@ button:hover {
 }
 
 /* =========================================
+   Error messages + disabled buttons
+   ========================================= */
+.error-msg {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.45);
+  color: #ef4444;               /* readable in both light and dark mode */
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+}
+
+button:disabled,
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: none;                 /* cancels the hover brightness */
+}
+
+/* =========================================
    Phones (all phone rules in one place)
    ========================================= */
 @media (max-width: 600px) {

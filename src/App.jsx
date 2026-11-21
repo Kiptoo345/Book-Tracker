@@ -12,6 +12,7 @@ function App() {
   const [session, setSession] = useState(null)
   const [books, setBooks] = useState([])
   const [people, setPeople] = useState([])
+  const [loadError, setLoadError] = useState('')
 
   // Load data
   useEffect(() => {
@@ -34,8 +35,13 @@ function App() {
 
     async function fetchBooks() {
       const { data, error } = await supabase.from('books').select('*')
-      if (error) console.error(error)
-      else setBooks(data)
+      if (error) {
+        console.error(error)
+        setLoadError("Couldn't load the books. Check your connection and refresh the page.")
+      } else {
+        setBooks(data)   
+        setLoadError('')
+      }
     }
     fetchBooks()
   }, [session])
@@ -48,8 +54,13 @@ function App() {
 
     async function fetchPeople() {
       const { data, error } = await supabase.from('people').select('*')
-      if (error) console.error(error)
-      else setPeople(data)
+      if (error) {
+        console.error(error)
+        setLoadError("Couldn't load the books. Check your connection and refresh the page.")
+      } else {
+        setPeople(data)  
+        setLoadError('')
+      }
     }
     fetchPeople()
   }, [session])
@@ -79,6 +90,9 @@ function App() {
       </header>
 
       <section id="center">
+        {loadError && <p className="error-msg" role="alert">{loadError}</p>}
+
+        
         <Routes>
           <Route
             path="/"

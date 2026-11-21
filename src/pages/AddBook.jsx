@@ -8,6 +8,8 @@ function AddBook({ setBooks, people, me }) {
   const [newAuthor, setNewAuthor] = useState('')
   const [newHolder, setNewHolder] = useState(null)
   const [newLocation, setNewLocation] = useState('')
+  const [saving, setSaving] = useState(false)  // true while the request is running
+  const [errorMsg, setErrorMsg] = useState('') // '' = no error showing
   const navigate = useNavigate()
 
   // Holder defaults to whoever is logged in
@@ -16,7 +18,15 @@ function AddBook({ setBooks, people, me }) {
   async function handleAddBook(e) {
     e.preventDefault()
 
-    if (newTitle.trim() === '') return
+    if (saving) return // already saving, ignore extra taps
+
+    if (newTitle.trim() === '') {
+      setErrorMsg('Please enter a title.')
+      return
+    }
+
+    setSaving(true)
+    setErrorMsg('') // clear any old error before trying again
 
     const { data, error } = await supabase
       .from('books')
@@ -25,17 +35,19 @@ function AddBook({ setBooks, people, me }) {
         author: newAuthor.trim(),
         current_holder_id: formHolder === '' ? null : formHolder,
         current_location: newLocation === '' ? null : newLocation,
-        last_updated: new Date().toISOString(), // so new books show a date
+        last_updated: new Date().toISOString(),
       })
       .select()
 
     if (error) {
-      console.error(error)
+      console.error(error) // still useful when debugging on the laptop
+      setErrorMsg("Couldn't add the book. Check your connection and try again.")
+      setSaving(false) // re-enable the button so they can retry
       return
     }
 
     setBooks(prev => [...prev, ...data])
-    navigate('/') // back to the list
+    navigate('/')
   }
 
   return (
@@ -81,7 +93,11 @@ function AddBook({ setBooks, people, me }) {
           </select>
         </label>
 
-        <button type="submit">Add book</button>
+        {errorMsg && <p className="error-msg" role="alert">{errorMsg}</p>}
+
+        <button type="submit" disabled={saving}>
+          {saving ? 'Saving…' : 'Add book'}
+        </button>
       </form>
 
       <Link to="/">← Back to list</Link>

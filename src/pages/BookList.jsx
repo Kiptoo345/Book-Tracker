@@ -135,7 +135,16 @@ function BookList({ books, people, me }) {
                   className="clickable"
                   onClick={() => navigate(`/book/${book.id}`)}
                 >
-                  <td data-label="Title">{book.title}</td>
+                  <td data-label="Title">
+                    <span className="title-cell">
+                      {book.cover_url ? (
+                        <img className="cover-thumb" src={book.cover_url} alt="" loading="lazy" />
+                      ) : (
+                        <span className="cover-thumb empty">📖</span>
+                      )}
+                      {book.title}
+                    </span>
+                  </td>
                   <td data-label="Author">{book.author}</td>
                   <td data-label="Category">{book.category ?? '—'}</td>
 

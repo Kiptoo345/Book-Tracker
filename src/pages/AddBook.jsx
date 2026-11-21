@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { LOCATIONS, CATEGORIES } from '../constants'
+import CoverPicker from '../components/CoverPicker'
 
 function AddBook({ setBooks, people, me }) {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newCategory, setNewCategory] = useState('')
+  const [newCover, setNewCover] = useState('')
   const [newHolder, setNewHolder] = useState(null)
   const [newLocation, setNewLocation] = useState('')
   const [saving, setSaving] = useState(false)  // true while the request is running
@@ -35,6 +37,7 @@ function AddBook({ setBooks, people, me }) {
         title: newTitle.trim(),
         author: newAuthor.trim(),
         category: newCategory === '' ? null : newCategory,
+        cover_url: newCover === '' ? null : newCover,
         current_holder_id: formHolder === '' ? null : formHolder,
         current_location: newLocation === '' ? null : newLocation,
         last_updated: new Date().toISOString(),
@@ -74,6 +77,14 @@ function AddBook({ setBooks, people, me }) {
             onChange={(e) => setNewAuthor(e.target.value)}
           />
         </label>
+
+        <CoverPicker
+          value={newCover}
+          onChange={setNewCover}
+          title={newTitle}
+          author={newAuthor}
+          disabled={saving}
+        />
 
         <label>
           Category

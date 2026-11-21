@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { LOCATIONS, CATEGORIES } from '../constants'
+import CoverPicker from '../components/CoverPicker'
 
 function EditBook({ books, setBooks, people }) {
   const { id } = useParams() // the ":id" part of /book/:id (always a string)
@@ -11,6 +12,7 @@ function EditBook({ books, setBooks, people }) {
   const [holderChoice, setHolderChoice] = useState(undefined)
   const [locationChoice, setLocationChoice] = useState(undefined)
   const [categoryChoice, setCategoryChoice] = useState(undefined)
+  const [coverChoice, setCoverChoice] = useState(undefined)
   const [busy, setBusy] = useState('')         // '' | 'saving' | 'deleting'
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -35,7 +37,8 @@ function EditBook({ books, setBooks, people }) {
     if (
       holderChoice === undefined &&
       locationChoice === undefined &&
-      categoryChoice === undefined
+      categoryChoice === undefined &&
+      coverChoice === undefined
     ) {
       navigate('/')
       return
@@ -51,6 +54,9 @@ function EditBook({ books, setBooks, people }) {
     }
     if (categoryChoice !== undefined) {
       updates.category = categoryChoice === '' ? null : categoryChoice
+    }
+    if (coverChoice !== undefined) {
+      updates.cover_url = coverChoice === '' ? null : coverChoice
     }
 
     // "Last updated" means "last moved", so only bump it when the
@@ -108,6 +114,14 @@ function EditBook({ books, setBooks, people }) {
       <p>{book.author}</p>
 
       <div className="stacked-form">
+        <CoverPicker
+          value={coverChoice ?? book.cover_url ?? ''}
+          onChange={setCoverChoice}
+          title={book.title}
+          author={book.author}
+          disabled={busy !== ''}
+        />
+
         <label>
           Category
           <select
